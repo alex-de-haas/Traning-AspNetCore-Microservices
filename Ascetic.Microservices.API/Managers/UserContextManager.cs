@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 
-namespace Ascetic.AspNetCore.Microservices.Managers
+namespace Ascetic.Microservices.API.Managers
 {
     public class UserContextManager : IUserContextManager
     {

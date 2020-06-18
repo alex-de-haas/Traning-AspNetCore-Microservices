@@ -12,8 +12,8 @@ using Traning.AspNetCore.Microservices.Catalog.Application.CQRS;
 namespace Traning.AspNetCore.Microservices.Catalog.API.Controllers
 {
     [Authorize]
-    [Route("[controller]")]
     [ApiController]
+    [Route("[controller]")]
     public class ProductsController : ControllerBase
     {
         private readonly IMediator _mediator;

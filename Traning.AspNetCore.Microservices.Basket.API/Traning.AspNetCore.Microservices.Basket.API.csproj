@@ -32,7 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Ascetic.AspNetCore.Microservices\Ascetic.AspNetCore.Microservices.csproj" />
+    <ProjectReference Include="..\Ascetic.Microservices.API\Ascetic.Microservices.API.csproj" />
     <ProjectReference Include="..\Traning.AspNetCore.Microservices.Basket.Application\Traning.AspNetCore.Microservices.Basket.Application.csproj" />
     <ProjectReference Include="..\Traning.AspNetCore.Microservices.Catalog.Abstractions\Traning.AspNetCore.Microservices.Catalog.Abstractions.csproj" />
   </ItemGroup>

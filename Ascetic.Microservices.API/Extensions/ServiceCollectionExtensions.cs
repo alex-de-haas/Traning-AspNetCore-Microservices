@@ -1,4 +1,4 @@
-﻿using Ascetic.AspNetCore.Microservices.Pipeline;
+﻿using Ascetic.Microservices.Application.Pipeline;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using OpenTracing.Util;

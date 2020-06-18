@@ -1,10 +1,9 @@
-using Ascetic.AspNetCore.Microservices.DelegatingHandlers;
-using Ascetic.AspNetCore.Microservices.Managers;
+using Ascetic.Microservices.API.DelegatingHandlers;
+using Ascetic.Microservices.API.Managers;
 using Ascetic.Microservices.Application.Managers;
 using AutoMapper;
 using FluentValidation.AspNetCore;
 using HealthChecks.UI.Client;
-using Jaeger.Thrift;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.AzureAD.UI;

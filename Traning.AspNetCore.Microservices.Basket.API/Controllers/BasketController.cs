@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading;
@@ -9,6 +10,7 @@ using Traning.AspNetCore.Microservices.Basket.Application.CQRS;
 
 namespace Traning.AspNetCore.Microservices.Basket.API.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class BasketController : ControllerBase

@@ -4,7 +4,7 @@ using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Ascetic.AspNetCore.Microservices.DelegatingHandlers
+namespace Ascetic.Microservices.API.DelegatingHandlers
 {
     public class AuthorizationHeaderHandler : DelegatingHandler
     {

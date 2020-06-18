@@ -6,7 +6,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Ascetic.AspNetCore.Microservices.Pipeline
+namespace Ascetic.Microservices.Application.Pipeline
 {
     public class RequestTraceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     {
