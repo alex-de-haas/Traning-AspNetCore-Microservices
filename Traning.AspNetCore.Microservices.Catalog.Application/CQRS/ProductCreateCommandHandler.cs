@@ -20,10 +20,10 @@ namespace Traning.AspNetCore.Microservices.Catalog.Application.CQRS
 
         public async Task<Guid> Handle(ProductCreateCommand request, CancellationToken cancellationToken)
         {
-            var entity = _mapper.Map<Product>(request);
-            _context.Products.Add(entity);
+            var product = _mapper.Map<Product>(request);
+            _context.Products.Add(product);
             await _context.SaveChangesAsync(cancellationToken);
-            return entity.Id;
+            return product.Id;
         }
     }
 }

@@ -57,7 +57,7 @@ namespace Traning.AspNetCore.Microservices.Basket.API
             });
             services
                 .AddControllers()
-                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<BasketUpdateCommandValidation>());
+                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<OrderProductCreateCommandValidation>());
             services
                 .AddSwaggerGen(options =>
                 {
@@ -112,8 +112,8 @@ namespace Traning.AspNetCore.Microservices.Basket.API
                 })
                 .AddInMemoryStorage();
 
-            services.AddAutoMapper(typeof(BasketProfile).Assembly);
-            services.AddMediatR(typeof(BasketViewQueryHandler).GetTypeInfo().Assembly);
+            services.AddAutoMapper(typeof(OrderProfile).Assembly);
+            services.AddMediatR(typeof(OrderViewQueryHandler).GetTypeInfo().Assembly);
 
             services.AddScoped<IUserContextManager, UserContextManager>();
 

@@ -73,10 +73,10 @@ namespace Traning.AspNetCore.Microservices.Catalog.Abstractions.Clients
             }
         }
 
-        public async Task UpdateProductAsync(ProductViewDto product, CancellationToken cancellationToken = default)
+        public async Task UpdateProductAsync(Guid productId, ProductUpdateDto product, CancellationToken cancellationToken = default)
         {
             if (product == null) throw new ArgumentNullException(nameof(product));
-            using (var request = new HttpRequestMessage(HttpMethod.Put, URL))
+            using (var request = new HttpRequestMessage(HttpMethod.Put, $"{URL}/{productId}"))
             {
                 var data = JsonConvert.SerializeObject(product);
                 request.Content = new StringContent(data, Encoding.UTF8, "application/json");

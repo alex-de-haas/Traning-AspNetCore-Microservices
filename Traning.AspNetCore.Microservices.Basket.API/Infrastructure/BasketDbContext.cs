@@ -7,7 +7,7 @@ namespace Traning.AspNetCore.Microservices.Basket.API.Infrastructure
 {
     public class BasketDbContext : DbContext, IBasketDbContext
     {
-        public DbSet<CustomerBasket> CustomerBaskets { get; set; }
+        public DbSet<Order> Orders { get; set; }
 
         public BasketDbContext(DbContextOptions<BasketDbContext> options) : base(options)
         {

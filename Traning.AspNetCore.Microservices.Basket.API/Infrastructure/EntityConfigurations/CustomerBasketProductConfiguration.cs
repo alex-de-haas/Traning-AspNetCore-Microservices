@@ -4,11 +4,11 @@ using Traning.AspNetCore.Microservices.Basket.Domain.Entities;
 
 namespace Traning.AspNetCore.Microservices.Basket.API.Infrastructure.EntityConfigurations
 {
-    public class CustomerBasketProductConfiguration : IEntityTypeConfiguration<CustomerBasketProduct>
+    public class CustomerBasketProductConfiguration : IEntityTypeConfiguration<OrderProduct>
     {
-        public void Configure(EntityTypeBuilder<CustomerBasketProduct> builder)
+        public void Configure(EntityTypeBuilder<OrderProduct> builder)
         {
-            builder.HasKey(x => new { x.BasketId, x.ProductId });
+            builder.HasKey(x => new { x.OrderId, x.ProductId });
         }
     }
 }

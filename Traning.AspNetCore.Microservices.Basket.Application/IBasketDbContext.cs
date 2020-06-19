@@ -7,7 +7,7 @@ namespace Traning.AspNetCore.Microservices.Basket.Application
 {
     public interface IBasketDbContext
     {
-        DbSet<CustomerBasket> CustomerBaskets { get; set; }
+        DbSet<Order> Orders { get; set; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }
 }

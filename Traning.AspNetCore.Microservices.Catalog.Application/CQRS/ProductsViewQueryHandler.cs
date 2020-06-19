@@ -22,7 +22,7 @@ namespace Traning.AspNetCore.Microservices.Catalog.Application.CQRS
         public async Task<ProductViewDto[]> Handle(ProductsViewQuery request, CancellationToken cancellationToken)
         {
             var query = _context.Products.AsQueryable().AsNoTracking();
-            if (request.ProductIds != null)
+            if (request.ProductIds.Any())
             {
                 query = query.Where(x => request.ProductIds.Contains(x.Id));
             }
