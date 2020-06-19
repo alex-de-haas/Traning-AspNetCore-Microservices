@@ -105,12 +105,14 @@ namespace Traning.AspNetCore.Microservices.Basket.API
                 .AddHealthChecks()
                 .AddSqlServer(Configuration["DATABASE"], tags: new[] { "ready" });
 
+            /*
             services
                 .AddHealthChecksUI(setupSettings: setup =>
                 {
                     setup.AddHealthCheckEndpoint("endpoint1", "/health/json");
                 })
                 .AddInMemoryStorage();
+            */
 
             services.AddAutoMapper(typeof(OrderProfile).Assembly);
             services.AddMediatR(typeof(OrderViewQueryHandler).GetTypeInfo().Assembly);
@@ -134,18 +136,20 @@ namespace Traning.AspNetCore.Microservices.Basket.API
             {
                 Predicate = _ => true
             });
+            /*
             app.UseHealthChecks("/health/json", new HealthCheckOptions()
             {
                 Predicate = _ => true,
                 ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
             });
+            */
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                endpoints.MapHealthChecksUI();
+                //endpoints.MapHealthChecksUI();
             });
             app.UseSwagger(options => options.PreSerializeFilters.Add((swagger, request) =>
             {
