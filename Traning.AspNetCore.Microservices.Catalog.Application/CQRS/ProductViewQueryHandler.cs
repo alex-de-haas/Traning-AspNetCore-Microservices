@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using MediatR;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Traning.AspNetCore.Microservices.Catalog.Abstractions.Models;
@@ -21,10 +20,6 @@ namespace Traning.AspNetCore.Microservices.Catalog.Application.CQRS
         public async Task<ProductViewDto> Handle(ProductViewQuery request, CancellationToken cancellationToken)
         {
             var product = await _context.Products.FindAsync(request.ProductId);
-            if (product == null)
-            {
-                throw new ApplicationException($"Product with id = '{request.ProductId}' not found.");
-            }
             return _mapper.Map<ProductViewDto>(product);
         }
     }

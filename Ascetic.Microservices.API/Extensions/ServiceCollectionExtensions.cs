@@ -42,7 +42,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
         public static IServiceCollection AddPipelineBehavior(this IServiceCollection services)
         {
-            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestTraceBehaviour<,>));
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestTraceBehavior<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestValidationBehavior<,>));
             return services;
         }

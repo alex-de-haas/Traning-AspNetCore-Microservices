@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace Ascetic.Microservices.Application.Pipeline
 {
-    public class RequestTraceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+    public class RequestTraceBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     {
         private readonly ITracer _tracer;
-        private readonly ILogger<RequestTraceBehaviour<TRequest, TResponse>> _logger;
+        private readonly ILogger<RequestTraceBehavior<TRequest, TResponse>> _logger;
 
-        public RequestTraceBehaviour(ITracer tracer, ILogger<RequestTraceBehaviour<TRequest, TResponse>> logger)
+        public RequestTraceBehavior(ITracer tracer, ILogger<RequestTraceBehavior<TRequest, TResponse>> logger)
         {
             _tracer = tracer;
             _logger = logger;

@@ -1,6 +1,5 @@
-﻿using AutoMapper;
+﻿using Ascetic.Microservices.Application.Exceptions;
 using MediatR;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -9,12 +8,10 @@ namespace Traning.AspNetCore.Microservices.Catalog.Application.CQRS
     public class ProductUpdateCommandHandler : IRequestHandler<ProductUpdateCommand>
     {
         private readonly ICatalogDbContext _context;
-        private readonly IMapper _mapper;
 
-        public ProductUpdateCommandHandler(ICatalogDbContext context, IMapper mapper)
+        public ProductUpdateCommandHandler(ICatalogDbContext context)
         {
             _context = context;
-            _mapper = mapper;
         }
 
         public async Task<Unit> Handle(ProductUpdateCommand request, CancellationToken cancellationToken)
@@ -22,9 +19,9 @@ namespace Traning.AspNetCore.Microservices.Catalog.Application.CQRS
             var product = await _context.Products.FindAsync(request.ProductId);
             if (product == null)
             {
-                throw new ApplicationException($"Product with id = '{request.ProductId}' not found.");
+                throw new EntityNotFoundException($"Product with id = '{request.ProductId}' not found.");
             }
-            _mapper.Map(request, product);
+            product.Update(request.Name, request.Description);
             await _context.SaveChangesAsync(cancellationToken);
             return Unit.Value;
         }

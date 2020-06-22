@@ -1,5 +1,5 @@
-﻿using MediatR;
-using System;
+﻿using Ascetic.Microservices.Application.Exceptions;
+using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -19,7 +19,7 @@ namespace Traning.AspNetCore.Microservices.Catalog.Application.CQRS
             var product = await _context.Products.FindAsync(request.ProductId);
             if (product == null)
             {
-                throw new ApplicationException($"Product with id = '{request.ProductId}' not found.");
+                throw new EntityNotFoundException($"Product with id = '{request.ProductId}' not found.");
             }
             _context.Products.Remove(product);
             await _context.SaveChangesAsync(cancellationToken);

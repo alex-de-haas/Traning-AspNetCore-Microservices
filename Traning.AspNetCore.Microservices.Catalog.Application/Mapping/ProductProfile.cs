@@ -12,8 +12,6 @@ namespace Traning.AspNetCore.Microservices.Catalog.Application.Mapping
             CreateMap<Product, ProductViewDto>();
             CreateMap<ProductCreateDto, ProductCreateCommand>();
             CreateMap<ProductUpdateDto, ProductUpdateCommand>();
-            CreateMap<ProductCreateCommand, Product>();
-            CreateMap<ProductUpdateCommand, Product>();
         }
     }
 }
