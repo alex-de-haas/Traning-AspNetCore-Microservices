@@ -1,4 +1,5 @@
 ﻿using Ascetic.Microservices.Application.Exceptions;
+using Ascetic.Microservices.Application.Extensions;
 using Ascetic.Microservices.Application.Managers;
 using AutoMapper;
 using MediatR;
@@ -28,8 +29,7 @@ namespace Traning.AspNetCore.Microservices.Basket.Application.CQRS
 
         public async Task<OrderViewDto> Handle(OrderViewQuery request, CancellationToken cancellationToken)
         {
-            var currentUser = _userContextManager.GetCurrentUser();
-            var customerEmail = currentUser.FindFirst("preferred_username").Value;
+            var customerEmail = _userContextManager.GetCurrentUserEmail();
             var order = await _context.Orders.AsNoTracking().Include(x => x.OrderProducts).FirstOrDefaultAsync(x => x.Id == request.OrderId && x.CustomerEmail == customerEmail, cancellationToken);
             if (order == null)
             {
@@ -40,6 +40,7 @@ namespace Traning.AspNetCore.Microservices.Basket.Application.CQRS
             foreach(var orderPorduct in result.OrderProducts)
             {
                 orderPorduct.Product = products.FirstOrDefault(x => x.Id == orderPorduct.ProductId);
+                //orderPorduct.Product = await _productsClient.GetProductAsync(orderPorduct.ProductId, cancellationToken);
             }
             return result;
         }

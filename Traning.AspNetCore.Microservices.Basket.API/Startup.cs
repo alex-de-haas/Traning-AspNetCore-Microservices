@@ -3,7 +3,6 @@ using Ascetic.Microservices.API.Managers;
 using Ascetic.Microservices.Application.Managers;
 using AutoMapper;
 using FluentValidation.AspNetCore;
-using HealthChecks.UI.Client;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.AzureAD.UI;
@@ -24,6 +23,7 @@ using Traning.AspNetCore.Microservices.Basket.Application;
 using Traning.AspNetCore.Microservices.Basket.Application.CQRS;
 using Traning.AspNetCore.Microservices.Basket.Application.Mapping;
 using Traning.AspNetCore.Microservices.Catalog.Abstractions.Clients;
+using Traning.AspNetCore.Microservices.Catalog.Abstractions.Infrastructure;
 
 namespace Traning.AspNetCore.Microservices.Basket.API
 {

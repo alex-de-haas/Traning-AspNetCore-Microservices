@@ -30,8 +30,12 @@ namespace Ascetic.Microservices.Application.Pipeline
                 }
                 catch (Exception e)
                 {
-                    Tags.Error.Set(scope.Span, true);
-                    _logger.LogError(e, "CQRS error");
+                    if (!e.Data.Contains("HandledByTracer"))
+                    {
+                        e.Data.Add("HandledByTracer", true);
+                        Tags.Error.Set(scope.Span, true);
+                        _logger.LogError(e, "CQRS error");
+                    }
                     throw;
                 }
             }

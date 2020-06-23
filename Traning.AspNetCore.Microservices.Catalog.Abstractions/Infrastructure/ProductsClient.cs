@@ -7,9 +7,10 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
+using Traning.AspNetCore.Microservices.Catalog.Abstractions.Clients;
 using Traning.AspNetCore.Microservices.Catalog.Abstractions.Models;
 
-namespace Traning.AspNetCore.Microservices.Catalog.Abstractions.Clients
+namespace Traning.AspNetCore.Microservices.Catalog.Abstractions.Infrastructure
 {
     public class ProductsClient : IProductsClient
     {

@@ -19,8 +19,12 @@ namespace Microsoft.AspNetCore.Builder
                 {
                     var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
 
-                    var tracer = context.RequestServices.GetRequiredService<ITracer>();
-                    Tags.Error.Set(tracer.ActiveSpan, true);
+                    if (!exceptionHandlerPathFeature.Error.Data.Contains("HandledByTracer"))
+                    {
+                        exceptionHandlerPathFeature.Error.Data.Add("HandledByTracer", true);
+                        var tracer = context.RequestServices.GetRequiredService<ITracer>();
+                        Tags.Error.Set(tracer.ActiveSpan, true);
+                    }
 
                     if (exceptionHandlerPathFeature.Error is ValidationException validationException)
                     {

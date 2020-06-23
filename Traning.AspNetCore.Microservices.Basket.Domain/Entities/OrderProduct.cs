@@ -4,12 +4,15 @@ namespace Traning.AspNetCore.Microservices.Basket.Domain.Entities
 {
     public class OrderProduct
     {
-        public Guid OrderId { get; private set; }
-        public Order Order { get; private set; }
-        public Guid ProductId { get; private set; }
-        public int Quantity { get; private set; }
+        public Guid OrderId { get; protected set; }
 
-        private OrderProduct() { }
+        public Order Order { get; protected set; }
+
+        public Guid ProductId { get; protected set; }
+
+        public int Quantity { get; protected set; }
+
+        protected OrderProduct() { }
 
         public OrderProduct(Order order, Guid productId, int quantity)
         {

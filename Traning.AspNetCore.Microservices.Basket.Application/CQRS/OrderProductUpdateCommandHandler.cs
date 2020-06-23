@@ -1,4 +1,5 @@
 ﻿using Ascetic.Microservices.Application.Exceptions;
+using Ascetic.Microservices.Application.Extensions;
 using Ascetic.Microservices.Application.Managers;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -21,8 +22,7 @@ namespace Traning.AspNetCore.Microservices.Basket.Application.CQRS
 
         public async Task<Unit> Handle(OrderProductUpdateCommand request, CancellationToken cancellationToken)
         {
-            var currentUser = _userContextManager.GetCurrentUser();
-            var customerEmail = currentUser.FindFirst("preferred_username").Value;
+            var customerEmail = _userContextManager.GetCurrentUserEmail();
             var order = await _context.Orders.Include(x => x.OrderProducts).FirstOrDefaultAsync(x => x.Id == request.OrderId && x.CustomerEmail == customerEmail, cancellationToken);
             if (order == null)
             {

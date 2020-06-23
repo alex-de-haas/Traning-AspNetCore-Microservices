@@ -6,14 +6,14 @@ namespace Traning.AspNetCore.Microservices.Basket.Domain.Entities
 {
     public class Order
     {
-        public Guid Id { get; private set; }
+        public Guid Id { get; protected set; }
 
-        public string CustomerEmail { get; private set; }
+        public string CustomerEmail { get; protected set; }
 
-        private HashSet<OrderProduct> _orderProducts;
+        protected HashSet<OrderProduct> _orderProducts;
         public IReadOnlyCollection<OrderProduct> OrderProducts => _orderProducts;
 
-        private Order() { }
+        protected Order() { }
 
         public Order(string customerEmail)
         {

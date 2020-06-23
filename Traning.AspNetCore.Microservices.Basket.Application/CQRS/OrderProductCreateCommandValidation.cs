@@ -15,9 +15,9 @@ namespace Traning.AspNetCore.Microservices.Basket.Application.CQRS
             _productsClient = productsClient;
 
             RuleFor(x => x.OrderId).NotEmpty();
+            RuleFor(x => x.Quantity).NotEmpty();
             RuleFor(x => x.ProductId).NotEmpty();
             RuleFor(x => x.ProductId).MustAsync(ProductExistsAsync).WithMessage(x => $"Product with id = {x.ProductId} not exists.");
-            RuleFor(x => x.Quantity).NotEmpty();
         }
 
         public async Task<bool> ProductExistsAsync(Guid productId, CancellationToken cancellationToken)

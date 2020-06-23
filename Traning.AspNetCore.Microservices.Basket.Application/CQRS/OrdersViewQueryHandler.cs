@@ -1,4 +1,5 @@
-﻿using Ascetic.Microservices.Application.Managers;
+﻿using Ascetic.Microservices.Application.Extensions;
+using Ascetic.Microservices.Application.Managers;
 using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -24,8 +25,7 @@ namespace Traning.AspNetCore.Microservices.Basket.Application.CQRS
 
         public async Task<OrderViewDto[]> Handle(OrdersViewQuery request, CancellationToken cancellationToken)
         {
-            var currentUser = _userContextManager.GetCurrentUser();
-            var customerEmail = currentUser.FindFirst("preferred_username").Value;
+            var customerEmail = _userContextManager.GetCurrentUserEmail();
             var query = _context.Orders.AsNoTracking().Where(x => x.CustomerEmail == customerEmail);
             return await _mapper.ProjectTo<OrderViewDto>(query).ToArrayAsync(cancellationToken);
         }

@@ -4,13 +4,13 @@ namespace Traning.AspNetCore.Microservices.Catalog.Domain.Entities
 {
     public class Product
     {
-        public Guid Id { get; private set; }
+        public Guid Id { get; protected set; }
 
-        public string Name { get; private set; }
+        public string Name { get; protected set; }
 
-        public string Description { get; private set; }
+        public string Description { get; protected set; }
 
-        private Product() { }
+        protected Product() { }
 
         public Product(string name, string description)
         {
