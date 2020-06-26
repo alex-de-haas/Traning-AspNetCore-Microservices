@@ -1,3 +1,4 @@
+using Ascetic.Microservices.API.DiagnosticObservers;
 using AutoMapper;
 using FluentValidation.AspNetCore;
 using HealthChecks.UI.Client;
@@ -92,7 +93,11 @@ namespace Traning.AspNetCore.Microservices.Catalog.API
                 });
 
             services.AddSerilogLogging();
-            services.AddOpenTracing();
+            services.AddDiagnosticObserver<RequestDiagnosticObserver>();
+            services.AddOpenTracing(builder => builder.ConfigureGenericDiagnostics(options =>
+            {
+                options.IgnoredListenerNames.Add(RequestDiagnosticObserver.DiagnosticListenerName);
+            }));
             services.AddJaeger();
             services.AddPipelineBehavior();
             services.AddHttpContextAccessor();
@@ -132,6 +137,7 @@ namespace Traning.AspNetCore.Microservices.Catalog.API
                 ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
             });
             */
+            app.UseDiagnosticObservers();
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();

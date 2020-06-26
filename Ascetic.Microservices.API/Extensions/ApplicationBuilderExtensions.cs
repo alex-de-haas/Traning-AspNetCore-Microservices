@@ -1,4 +1,5 @@
-﻿using Ascetic.Microservices.Application.Exceptions;
+﻿using Ascetic.Microservices.API.DiagnosticObservers;
+using Ascetic.Microservices.Application.Exceptions;
 using FluentValidation;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
@@ -6,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using OpenTracing;
 using OpenTracing.Tag;
+using System.Diagnostics;
 
 namespace Microsoft.AspNetCore.Builder
 {
@@ -17,22 +19,15 @@ namespace Microsoft.AspNetCore.Builder
             {
                 errorApp.Run(async context =>
                 {
+                    var tracer = context.RequestServices.GetRequiredService<ITracer>();
                     var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
-
-                    if (!exceptionHandlerPathFeature.Error.Data.Contains("HandledByTracer"))
-                    {
-                        exceptionHandlerPathFeature.Error.Data.Add("HandledByTracer", true);
-                        var tracer = context.RequestServices.GetRequiredService<ITracer>();
-                        Tags.Error.Set(tracer.ActiveSpan, true);
-                    }
-
                     if (exceptionHandlerPathFeature.Error is ValidationException validationException)
                     {
                         context.Response.StatusCode = 400;
                         context.Response.ContentType = "application/json";
                         await context.Response.WriteAsync(JsonConvert.SerializeObject(new
                         {
-                            context.TraceIdentifier,
+                            tracer.ActiveSpan.Context.TraceId,
                             validationException.Message,
                             validationException.Errors
                         }));
@@ -43,21 +38,32 @@ namespace Microsoft.AspNetCore.Builder
                         context.Response.ContentType = "application/json";
                         await context.Response.WriteAsync(JsonConvert.SerializeObject(new
                         {
-                            context.TraceIdentifier,
+                            tracer.ActiveSpan.Context.TraceId,
                             entityNotFoundException.Message
                         }));
                     }
                     else
                     {
+                        tracer.ActiveSpan.SetTag(Tags.Error, true);
                         context.Response.StatusCode = 500;
                         context.Response.ContentType = "application/json";
                         await context.Response.WriteAsync(JsonConvert.SerializeObject(new
                         {
-                            context.TraceIdentifier,
+                            tracer.ActiveSpan.Context.TraceId,
                         }));
                     }
                 });
             });
+            return app;
+        }
+
+        public static IApplicationBuilder UseDiagnosticObservers(this IApplicationBuilder app)
+        {
+            var diagnosticObservers = app.ApplicationServices.GetServices<DiagnosticObserverBase>();
+            foreach (var diagnosticObserver in diagnosticObservers)
+            {
+                DiagnosticListener.AllListeners.Subscribe(diagnosticObserver);
+            }
             return app;
         }
     }

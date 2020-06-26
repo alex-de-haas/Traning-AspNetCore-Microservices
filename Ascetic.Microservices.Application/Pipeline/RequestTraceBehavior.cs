@@ -1,8 +1,5 @@
 ﻿using MediatR;
-using Microsoft.Extensions.Logging;
-using OpenTracing;
-using OpenTracing.Tag;
-using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -10,17 +7,34 @@ namespace Ascetic.Microservices.Application.Pipeline
 {
     public class RequestTraceBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     {
-        private readonly ITracer _tracer;
-        private readonly ILogger<RequestTraceBehavior<TRequest, TResponse>> _logger;
+        private const string DiagnosticListenerName = "RequestTrace";
 
-        public RequestTraceBehavior(ITracer tracer, ILogger<RequestTraceBehavior<TRequest, TResponse>> logger)
-        {
-            _tracer = tracer;
-            _logger = logger;
-        }
+        private static readonly DiagnosticSource _diagnosticSource = new DiagnosticListener(DiagnosticListenerName);
 
         public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
         {
+            var activity = new Activity(DiagnosticListenerName);
+            activity.AddTag("component", "CQRS");
+            activity.AddTag("request", typeof(TRequest).FullName);
+            activity.AddTag("response", typeof(TResponse).FullName);
+            activity.AddBaggage("test", "test");
+            if (_diagnosticSource.IsEnabled(DiagnosticListenerName))
+            {
+                _diagnosticSource.StartActivity(activity, null);
+            }
+            try
+            {
+                var response = await next();
+                return response;
+            }
+            finally
+            {
+                if (_diagnosticSource.IsEnabled(DiagnosticListenerName))
+                {
+                    _diagnosticSource.StopActivity(activity, null);
+                }
+            }
+            /*
             using (var scope = _tracer.BuildSpan($"CQRS: {typeof(TRequest).FullName}").StartActive(finishSpanOnDispose: true))
             {
                 try
@@ -30,15 +44,12 @@ namespace Ascetic.Microservices.Application.Pipeline
                 }
                 catch (Exception e)
                 {
-                    if (!e.Data.Contains("HandledByTracer"))
-                    {
-                        e.Data.Add("HandledByTracer", true);
-                        Tags.Error.Set(scope.Span, true);
-                        _logger.LogError(e, "CQRS error");
-                    }
+                    Tags.Error.Set(scope.Span, true);
+                    _logger.LogError(e, "CQRS error");
                     throw;
                 }
             }
+            */
         }
     }
 }

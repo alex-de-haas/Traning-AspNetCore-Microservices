@@ -1,5 +1,7 @@
-﻿using Ascetic.Microservices.Application.Pipeline;
+﻿using Ascetic.Microservices.API.DiagnosticObservers;
+using Ascetic.Microservices.Application.Pipeline;
 using MediatR;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using OpenTracing.Util;
 using Serilog;
@@ -45,6 +47,11 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestTraceBehavior<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestValidationBehavior<,>));
             return services;
+        }
+
+        public static void AddDiagnosticObserver<TDiagnosticObserver>(this IServiceCollection services) where TDiagnosticObserver : DiagnosticObserverBase
+        {
+            services.TryAddEnumerable(ServiceDescriptor.Transient<DiagnosticObserverBase, TDiagnosticObserver>());
         }
     }
 }
