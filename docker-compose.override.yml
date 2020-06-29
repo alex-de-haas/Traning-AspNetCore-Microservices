@@ -24,6 +24,11 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=https://+:443;http://+:80
       - DATABASE=Server=traning.microservices.database;Database=Catalog_DB;User=sa;Password=My_P@ssword_123;
+      - EVENTBUS_HOSTNAME=traning.microservices.eventbus
+      - EVENTBUS_PORT=5672
+      - EVENTBUS_USERNAME=rabbitmq
+      - EVENTBUS_PASSWORD=rabbitmq
+      - EVENTBUS_VHOST=/
       - JAEGER_SERVICE_NAME=catalog
       - JAEGER_AGENT_HOST=traning.microservices.jaeger
       - JAEGER_AGENT_PORT=6831
@@ -36,6 +41,34 @@ services:
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
     depends_on:
       - traning.microservices.database
+  traning.microservices.email:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - EVENTBUS_HOSTNAME=traning.microservices.eventbus
+      - EVENTBUS_PORT=5672
+      - EVENTBUS_USERNAME=rabbitmq
+      - EVENTBUS_PASSWORD=rabbitmq
+      - EVENTBUS_VHOST=/
+      - JAEGER_SERVICE_NAME=email
+      - JAEGER_AGENT_HOST=traning.microservices.jaeger
+      - JAEGER_AGENT_PORT=6831
+      - JAEGER_SAMPLER_TYPE=const
+    ports:
+      - "60011:80"
+      - "44311:443"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+  traning.microservices.eventbus:
+    hostname: traning.microservices.eventbus
+    ports:
+      - 5672:5672
+      - 15672:15672
+    environment:
+      - RABBITMQ_DEFAULT_USER=rabbitmq
+      - RABBITMQ_DEFAULT_PASS=rabbitmq
+      - RABBITMQ_DEFAULT_VHOST=/
   traning.microservices.jaeger:
     environment:
       - COLLECTOR_ZIPKIN_HTTP_PORT=9411

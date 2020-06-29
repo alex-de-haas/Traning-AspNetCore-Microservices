@@ -11,6 +11,13 @@ services:
     build:
       context: .
       dockerfile: Traning.AspNetCore.Microservices.Catalog.API/Dockerfile
+  traning.microservices.email:
+    image: ${DOCKER_REGISTRY-}traning.microservices.email
+    build:
+      context: .
+      dockerfile: Traning.AspNetCore.Microservices.Email.API/Dockerfile
+  traning.microservices.eventbus:
+    image: rabbitmq:3-management
   traning.microservices.jaeger:
     image: jaegertracing/all-in-one:latest
   traning.microservices.database:

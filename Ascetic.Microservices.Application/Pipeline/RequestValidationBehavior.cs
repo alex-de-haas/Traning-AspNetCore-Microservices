@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using Ascetic.Microservices.Application.Extensions;
+using FluentValidation;
 using MediatR;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -24,10 +25,7 @@ namespace Ascetic.Microservices.Application.Pipeline
 
         public Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
         {
-            if (_diagnosticSource.IsEnabled($"{DiagnosticListenerName}.HandleStart"))
-            {
-                _diagnosticSource.Write($"{DiagnosticListenerName}.HandleStart", new { });
-            }
+            _diagnosticSource.WriteIfEnabled($"{DiagnosticListenerName}.HandleStart", new { ValidationsCount = _validators.Count() });
             try
             {
                 var context = new ValidationContext(request);
@@ -38,15 +36,13 @@ namespace Ascetic.Microservices.Application.Pipeline
                     .ToList();
                 if (failures.Count != 0)
                 {
+                    _diagnosticSource.WriteIfEnabled($"{DiagnosticListenerName}.HandleError", new { Failures = failures });
                     throw new ValidationException(failures);
                 }
             }
             finally
             {
-                if (_diagnosticSource.IsEnabled($"{DiagnosticListenerName}.HandleEnd"))
-                {
-                    _diagnosticSource.Write($"{DiagnosticListenerName}.HandleEnd", new { });
-                }
+                _diagnosticSource.WriteIfEnabled($"{DiagnosticListenerName}.HandleEnd", new { });
             }
             return next();
         }

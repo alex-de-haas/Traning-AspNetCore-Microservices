@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Ascetic.Microservices.Application\Ascetic.Microservices.Application.csproj" />
+    <ProjectReference Include="..\Ascetic.Microservices.RabbitMQ\Ascetic.Microservices.RabbitMQ.csproj" />
     <ProjectReference Include="..\Traning.AspNetCore.Microservices.Catalog.Abstractions\Traning.AspNetCore.Microservices.Catalog.Abstractions.csproj" />
     <ProjectReference Include="..\Traning.AspNetCore.Microservices.Catalog.Domain\Traning.AspNetCore.Microservices.Catalog.Domain.csproj" />
   </ItemGroup>

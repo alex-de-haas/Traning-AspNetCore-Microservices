@@ -3,6 +3,7 @@ using AutoMapper;
 using Dapper;
 using MediatR;
 using Microsoft.Extensions.Configuration;
+using OpenTracing;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading;
@@ -16,16 +17,19 @@ namespace Traning.AspNetCore.Microservices.Catalog.Application.CQRS
         private readonly ICatalogDbContext _context;
         private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
+        private readonly ITracer _tracer;
 
-        public ProductsViewQueryHandler(ICatalogDbContext context, IMapper mapper, IConfiguration configuration)
+        public ProductsViewQueryHandler(ICatalogDbContext context, IMapper mapper, IConfiguration configuration, ITracer tracer)
         {
             _context = context;
             _mapper = mapper;
             _configuration = configuration;
+            _tracer = tracer;
         }
 
         public async Task<ProductViewDto[]> Handle(ProductsViewQuery request, CancellationToken cancellationToken)
         {
+            
             using (var connection = new SqlConnection(_configuration["DATABASE"]))
             {
                 await connection.OpenAsync(cancellationToken);
@@ -34,9 +38,13 @@ namespace Traning.AspNetCore.Microservices.Catalog.Application.CQRS
                 {
                     query += " WHERE Id IN @ProductIds";
                 }
-                var result = await connection.QueryAsync<ProductViewDto>(query, request);
-                return result.ToArray();
+                using (var scope = _tracer.BuildSpan($"Products Select").StartActive(finishSpanOnDispose: true))
+                {
+                    var result = await connection.QueryAsync<ProductViewDto>(query, request);
+                    return result.ToArray();
+                }
             }
+
             /*
             var query = _context.Products.AsQueryable().AsNoTracking();
             if (request.ProductIds.Any())

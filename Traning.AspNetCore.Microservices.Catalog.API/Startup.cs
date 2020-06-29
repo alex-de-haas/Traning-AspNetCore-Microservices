@@ -1,4 +1,5 @@
 using Ascetic.Microservices.API.DiagnosticObservers;
+using Ascetic.Microservices.RabbitMQ.Managers;
 using AutoMapper;
 using FluentValidation.AspNetCore;
 using HealthChecks.UI.Client;
@@ -117,6 +118,8 @@ namespace Traning.AspNetCore.Microservices.Catalog.API
 
             services.AddAutoMapper(typeof(ProductProfile).Assembly);
             services.AddMediatR(typeof(ProductsViewQueryHandler).GetTypeInfo().Assembly);
+
+            services.AddSingleton<IEventBusManager, RabbitMqManager>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

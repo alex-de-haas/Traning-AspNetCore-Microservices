@@ -14,12 +14,12 @@ namespace Ascetic.Microservices.Application.Pipeline
         public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
         {
             var activity = new Activity(DiagnosticListenerName);
-            activity.AddTag("component", "CQRS");
-            activity.AddTag("request", typeof(TRequest).FullName);
-            activity.AddTag("response", typeof(TResponse).FullName);
-            activity.AddBaggage("test", "test");
             if (_diagnosticSource.IsEnabled(DiagnosticListenerName))
             {
+                activity.AddTag("component", "CQRS");
+                activity.AddTag("request", typeof(TRequest).FullName);
+                activity.AddTag("response", typeof(TResponse).FullName);
+                activity.AddBaggage("test", "test");
                 _diagnosticSource.StartActivity(activity, null);
             }
             try
@@ -34,22 +34,6 @@ namespace Ascetic.Microservices.Application.Pipeline
                     _diagnosticSource.StopActivity(activity, null);
                 }
             }
-            /*
-            using (var scope = _tracer.BuildSpan($"CQRS: {typeof(TRequest).FullName}").StartActive(finishSpanOnDispose: true))
-            {
-                try
-                {
-                    var response = await next();
-                    return response;
-                }
-                catch (Exception e)
-                {
-                    Tags.Error.Set(scope.Span, true);
-                    _logger.LogError(e, "CQRS error");
-                    throw;
-                }
-            }
-            */
         }
     }
 }
