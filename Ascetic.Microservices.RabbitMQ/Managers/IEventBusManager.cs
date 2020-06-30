@@ -2,6 +2,6 @@
 {
     public interface IEventBusManager
     {
-        void Publish<T>(string queue, T model); 
+        void Publish<T>(T model, string queue); 
     }
 }

@@ -1,8 +1,6 @@
 using Ascetic.Microservices.API.DiagnosticObservers;
-using Ascetic.Microservices.RabbitMQ.Managers;
 using AutoMapper;
 using FluentValidation.AspNetCore;
-using HealthChecks.UI.Client;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.AzureAD.UI;
@@ -119,7 +117,14 @@ namespace Traning.AspNetCore.Microservices.Catalog.API
             services.AddAutoMapper(typeof(ProductProfile).Assembly);
             services.AddMediatR(typeof(ProductsViewQueryHandler).GetTypeInfo().Assembly);
 
-            services.AddSingleton<IEventBusManager, RabbitMqManager>();
+            services.AddRabbitMqEventBus(options =>
+            {
+                options.HostName = Configuration.GetValue<string>("EVENTBUS_HOSTNAME");
+                options.Port = Configuration.GetValue<int>("EVENTBUS_PORT");
+                options.UserName = Configuration.GetValue<string>("EVENTBUS_USERNAME");
+                options.Password = Configuration.GetValue<string>("EVENTBUS_PASSWORD");
+                options.VHost = Configuration.GetValue<string>("EVENTBUS_VHOST");
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

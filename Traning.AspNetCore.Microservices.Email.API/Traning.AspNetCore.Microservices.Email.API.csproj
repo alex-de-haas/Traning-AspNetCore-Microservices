@@ -10,10 +10,12 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.9" />
     <PackageReference Include="OpenTracing.Contrib.NetCore" Version="0.6.2" />
+    <PackageReference Include="RabbitMQ.Client" Version="6.1.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Ascetic.Microservices.API\Ascetic.Microservices.API.csproj" />
+    <ProjectReference Include="..\Traning.AspNetCore.Microservices.Catalog.Abstractions\Traning.AspNetCore.Microservices.Catalog.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>

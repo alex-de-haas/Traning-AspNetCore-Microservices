@@ -1,37 +1,38 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.ObjectPool;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
+using System;
 using System.Text;
 
 namespace Ascetic.Microservices.RabbitMQ.Managers
 {
     public class RabbitMqManager : IEventBusManager
     {
-        private readonly ConnectionFactory _factory;
-        private readonly IConfiguration _configuration;
+        private readonly DefaultObjectPool<IModel> _objectPool;
 
-        public RabbitMqManager(IConfiguration configuration)
+        public RabbitMqManager(IPooledObjectPolicy<IModel> objectPolicy)
         {
-            _configuration = configuration;
-            _factory = new ConnectionFactory()
-            {
-                HostName = _configuration.GetValue<string>("EVENTBUS_HOSTNAME"),
-                Port = _configuration.GetValue<int>("EVENTBUS_PORT"),
-                UserName = _configuration.GetValue<string>("EVENTBUS_USERNAME"),
-                Password = _configuration.GetValue<string>("EVENTBUS_PASSWORD"),
-                VirtualHost = _configuration.GetValue<string>("EVENTBUS_VHOST"),
-            };
+            _objectPool = new DefaultObjectPool<IModel>(objectPolicy, Environment.ProcessorCount * 2);
         }
 
-        public void Publish<T>(string queue, T model)
+        public void Publish<T>(T model, string queue)
         {
-            using (var connection = _factory.CreateConnection())
-            using (var channel = connection.CreateModel())
+            var channel = _objectPool.Get();
+            try
             {
                 channel.QueueDeclare(queue: queue, durable: false, exclusive: false, autoDelete: false, arguments: null);
                 var message = JsonConvert.SerializeObject(model);
-                var body = Encoding.UTF8.GetBytes(message);
-                channel.BasicPublish(exchange: "", routingKey: queue, basicProperties: null, body: body);
+                var sendBytes = Encoding.UTF8.GetBytes(message);
+                var properties = channel.CreateBasicProperties();
+                channel.BasicPublish("", queue, properties, sendBytes);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                _objectPool.Return(channel);
             }
         }
     }
