@@ -11,14 +11,14 @@ services:
       - JAEGER_AGENT_HOST=traning.microservices.jaeger
       - JAEGER_AGENT_PORT=6831
       - JAEGER_SAMPLER_TYPE=const
+      - ZIPKIN_URL=http://traning.microservices.zipkin:9411
+      - ZIPKIN_SERVICE_NAME=basket
     ports:
       - "60001:80"
       - "44301:443"
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
-    depends_on:
-      - traning.microservices.database
   traning.microservices.catalog:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
@@ -33,14 +33,14 @@ services:
       - JAEGER_AGENT_HOST=traning.microservices.jaeger
       - JAEGER_AGENT_PORT=6831
       - JAEGER_SAMPLER_TYPE=const
+      - ZIPKIN_URL=http://traning.microservices.zipkin:9411
+      - ZIPKIN_SERVICE_NAME=catalog
     ports:
       - "60002:80"
       - "44302:443"
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
-    depends_on:
-      - traning.microservices.database
   traning.microservices.email:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
@@ -70,8 +70,6 @@ services:
       - RABBITMQ_DEFAULT_PASS=rabbitmq
       - RABBITMQ_DEFAULT_VHOST=/
   traning.microservices.jaeger:
-    environment:
-      - COLLECTOR_ZIPKIN_HTTP_PORT=9411
     ports:
       - "5775:5775/udp"
       - "6831:6831/udp"
@@ -79,6 +77,8 @@ services:
       - "5778:5778" 
       - "16686:16686"
       - "14268:14268"
+  traning.microservices.zipkin:
+    ports:
       - "9411:9411"
   traning.microservices.database:
     environment:

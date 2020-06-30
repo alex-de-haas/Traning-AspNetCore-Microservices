@@ -1,4 +1,5 @@
 using Ascetic.Microservices.API.DelegatingHandlers;
+using Ascetic.Microservices.API.DiagnosticObservers;
 using Ascetic.Microservices.API.Managers;
 using Ascetic.Microservices.Application.Managers;
 using AutoMapper;
@@ -14,6 +15,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
+using OpenTracing.Contrib.NetCore.CoreFx;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -96,8 +98,20 @@ namespace Traning.AspNetCore.Microservices.Basket.API
                 });
 
             services.AddSerilogLogging();
-            services.AddOpenTracing();
+            services.AddDiagnosticObserver<RequestDiagnosticObserver>();
+            services.AddOpenTracing(builder => builder.ConfigureGenericDiagnostics(options =>
+            {
+                options.IgnoredListenerNames.Add(RequestDiagnosticObserver.DiagnosticListenerName);
+            }));
             services.AddJaeger();
+            /*
+            services.AddZipkin();
+            services.Configure<HttpHandlerDiagnosticOptions>(options =>
+            {
+                var zipkinUri = new Uri(Configuration["ZIPKIN_URL"]);
+                options.IgnorePatterns.Add(request => zipkinUri.IsBaseOf(request.RequestUri));
+            });
+            */
             services.AddPipelineBehavior();
             services.AddHttpContextAccessor();
 
@@ -143,6 +157,7 @@ namespace Traning.AspNetCore.Microservices.Basket.API
                 ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
             });
             */
+            app.UseDiagnosticObservers();
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();

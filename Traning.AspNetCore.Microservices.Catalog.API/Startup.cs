@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
+using OpenTracing.Contrib.NetCore.CoreFx;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -98,6 +99,14 @@ namespace Traning.AspNetCore.Microservices.Catalog.API
                 options.IgnoredListenerNames.Add(RequestDiagnosticObserver.DiagnosticListenerName);
             }));
             services.AddJaeger();
+            /*
+            services.AddZipkin();
+            services.Configure<HttpHandlerDiagnosticOptions>(options =>
+            {
+                var zipkinUri = new Uri(Configuration["ZIPKIN_URL"]);
+                options.IgnorePatterns.Add(request => zipkinUri.IsBaseOf(request.RequestUri));
+            });
+            */
             services.AddPipelineBehavior();
             services.AddHttpContextAccessor();
 

@@ -1,9 +1,12 @@
 ﻿using Ascetic.Microservices.API.DiagnosticObservers;
 using Ascetic.Microservices.Application.Pipeline;
 using MediatR;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
+using OpenTracing;
 using OpenTracing.Util;
+using Petabridge.Tracing.Zipkin;
 using Serilog;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -12,11 +15,28 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static IServiceCollection AddJaeger(this IServiceCollection services)
         {
-            services.AddSingleton(serviceProvider =>
+            services.AddSingleton<ITracer>(serviceProvider =>
             {
                 var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
-                var config = Jaeger.Configuration.FromEnv(loggerFactory);
+                var configuration = serviceProvider.GetRequiredService<IConfiguration>();
+                var config = Jaeger.Configuration.FromIConfiguration(loggerFactory, configuration);
                 var tracer = config.GetTracer();
+                if (!GlobalTracer.IsRegistered())
+                {
+                    GlobalTracer.Register(tracer);
+                }
+                return tracer;
+            });
+            return services;
+        }
+
+        public static IServiceCollection AddZipkin(this IServiceCollection services)
+        {
+            services.AddSingleton<ITracer>(serviceProvider =>
+            {
+                var configuration = serviceProvider.GetRequiredService<IConfiguration>();
+                //var tracer = new ZipkinTracer(new ZipkinTracerOptions(new Endpoint(configuration["ZIPKIN_SERVICE_NAME"]), ZipkinKafkaSpanReporter.Create(new ZipkinKafkaReportingOptions(new[] { configuration["ZIPKIN_URL"] }, debugLogging: true))));
+                var tracer = new ZipkinTracer(new ZipkinTracerOptions(configuration["ZIPKIN_URL"], configuration["ZIPKIN_SERVICE_NAME"], debug: true));
                 if (!GlobalTracer.IsRegistered())
                 {
                     GlobalTracer.Register(tracer);
@@ -51,7 +71,8 @@ namespace Microsoft.Extensions.DependencyInjection
 
         public static void AddDiagnosticObserver<TDiagnosticObserver>(this IServiceCollection services) where TDiagnosticObserver : DiagnosticObserverBase
         {
-            services.TryAddEnumerable(ServiceDescriptor.Transient<DiagnosticObserverBase, TDiagnosticObserver>());
+            services.TryAddTransient<DiagnosticObserverBase, TDiagnosticObserver>();
+            //services.TryAddEnumerable(ServiceDescriptor.Transient<DiagnosticObserverBase, TDiagnosticObserver>());
         }
     }
 }

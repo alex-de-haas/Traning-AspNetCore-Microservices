@@ -6,19 +6,27 @@ services:
     build:
       context: .
       dockerfile: Traning.AspNetCore.Microservices.Basket.API/Dockerfile
+    depends_on:
+      - traning.microservices.database
   traning.microservices.catalog:
     image: ${DOCKER_REGISTRY-}traning.microservices.catalog
     build:
       context: .
       dockerfile: Traning.AspNetCore.Microservices.Catalog.API/Dockerfile
+    depends_on:
+      - traning.microservices.database
   traning.microservices.email:
     image: ${DOCKER_REGISTRY-}traning.microservices.email
     build:
       context: .
       dockerfile: Traning.AspNetCore.Microservices.Email.API/Dockerfile
+    depends_on:
+      - traning.microservices.eventbus
   traning.microservices.eventbus:
     image: rabbitmq:3-management
   traning.microservices.jaeger:
     image: jaegertracing/all-in-one:latest
+  traning.microservices.zipkin:
+    image: openzipkin/zipkin:latest
   traning.microservices.database:
     image: "mcr.microsoft.com/mssql/server"
