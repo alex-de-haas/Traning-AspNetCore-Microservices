@@ -1,5 +1,4 @@
-﻿using Ascetic.Microservices.Application.Exceptions;
-using MediatR;
+﻿using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -17,11 +16,7 @@ namespace Traning.AspNetCore.Microservices.Catalog.Application.CQRS
         public async Task<Unit> Handle(ProductDeleteCommand request, CancellationToken cancellationToken)
         {
             var product = await _context.Products.FindAsync(request.ProductId);
-            if (product == null)
-            {
-                throw new EntityNotFoundException($"Product with id = '{request.ProductId}' not found.");
-            }
-            _context.Products.Remove(product);
+            product.Delete();
             await _context.SaveChangesAsync(cancellationToken);
             return Unit.Value;
         }

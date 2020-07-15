@@ -54,5 +54,15 @@ namespace Traning.AspNetCore.Microservices.Basket.API.Controllers
             var result = await _mediator.Send(command, cancellationToken);
             return CreatedAtRoute(nameof(GetOrderAsync), new { orderId = result }, result);
         }
+
+        [HttpPut("{orderId}", Name = nameof(UpdateOrderAsync))]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public async Task UpdateOrderAsync(Guid orderId, [FromBody] OrderUpdateDto model, CancellationToken cancellationToken = default)
+        {
+            var command = _mapper.Map<OrderUpdateCommand>(model);
+            command.OrderId = orderId;
+            await _mediator.Send(command, cancellationToken);
+            Response.StatusCode = StatusCodes.Status204NoContent;
+        }
     }
 }

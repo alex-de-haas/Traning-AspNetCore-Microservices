@@ -10,6 +10,8 @@ namespace Traning.AspNetCore.Microservices.Catalog.Domain.Entities
 
         public string Description { get; protected set; }
 
+        public bool IsDeleted { get; protected set; }
+
         protected Product() { }
 
         public Product(string name, string description)
@@ -21,6 +23,11 @@ namespace Traning.AspNetCore.Microservices.Catalog.Domain.Entities
         {
             Name = name;
             Description = description;
+        }
+
+        public void Delete()
+        {
+            IsDeleted = true;
         }
     }
 }

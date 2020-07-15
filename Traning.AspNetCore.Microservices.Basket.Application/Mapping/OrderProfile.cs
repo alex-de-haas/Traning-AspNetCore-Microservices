@@ -11,6 +11,7 @@ namespace Traning.AspNetCore.Microservices.Basket.Application.Mapping
         {
             CreateMap<Order, OrderViewDto>();
             CreateMap<OrderCreateDto, OrderCreateCommand>();
+            CreateMap<OrderUpdateDto, OrderUpdateCommand>();
             CreateMap<OrderProductCreateDto, OrderProductCreateCommand>();
             CreateMap<OrderProductUpdateDto, OrderProductUpdateCommand>();
         }

@@ -1,5 +1,4 @@
-﻿using Ascetic.Microservices.Application.Exceptions;
-using Ascetic.Microservices.Application.Extensions;
+﻿using Ascetic.Microservices.Application.Extensions;
 using Ascetic.Microservices.Application.Managers;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -23,10 +22,6 @@ namespace Traning.AspNetCore.Microservices.Basket.Application.CQRS
         {
             var customerEmail = _userContextManager.GetCurrentUserEmail();
             var order = await _context.Orders.Include(x => x.OrderProducts).FirstOrDefaultAsync(x => x.Id == request.OrderId && x.CustomerEmail == customerEmail, cancellationToken);
-            if (order == null)
-            {
-                throw new EntityNotFoundException($"Order with id = '{request.OrderId}' for customer with email = '{customerEmail}' not found.");
-            }
             _context.Orders.Remove(order);
             await _context.SaveChangesAsync(cancellationToken);
             return Unit.Value;

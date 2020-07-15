@@ -10,6 +10,8 @@ namespace Traning.AspNetCore.Microservices.Basket.Domain.Entities
 
         public string CustomerEmail { get; protected set; }
 
+        public OrderStatus Status { get; protected set; }
+
         protected HashSet<OrderProduct> _orderProducts;
         public IReadOnlyCollection<OrderProduct> OrderProducts => _orderProducts;
 
@@ -18,6 +20,7 @@ namespace Traning.AspNetCore.Microservices.Basket.Domain.Entities
         public Order(string customerEmail)
         {
             CustomerEmail = customerEmail;
+            Status = OrderStatus.New;
             _orderProducts = new HashSet<OrderProduct>();
         }
 
@@ -33,6 +36,16 @@ namespace Traning.AspNetCore.Microservices.Basket.Domain.Entities
             {
                 _orderProducts.Remove(product);
             }
+        }
+
+        public void SetStatus(OrderStatus status)
+        {
+            if (Status == OrderStatus.New && status == OrderStatus.Paid ||
+                Status == OrderStatus.Paid && status == OrderStatus.Shipped)
+            {
+                Status = status;
+            }
+            throw new InvalidOperationException($"Invalid order status transition: {Status} -> {status}");
         }
     }
 }

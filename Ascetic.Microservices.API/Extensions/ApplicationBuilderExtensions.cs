@@ -1,5 +1,4 @@
 ﻿using Ascetic.Microservices.API.DiagnosticObservers;
-using Ascetic.Microservices.Application.Exceptions;
 using FluentValidation;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
@@ -30,16 +29,6 @@ namespace Microsoft.AspNetCore.Builder
                             tracer.ActiveSpan.Context.TraceId,
                             validationException.Message,
                             validationException.Errors
-                        }));
-                    }
-                    else if (exceptionHandlerPathFeature.Error is EntityNotFoundException entityNotFoundException)
-                    {
-                        context.Response.StatusCode = 400;
-                        context.Response.ContentType = "application/json";
-                        await context.Response.WriteAsync(JsonConvert.SerializeObject(new
-                        {
-                            tracer.ActiveSpan.Context.TraceId,
-                            entityNotFoundException.Message
                         }));
                     }
                     else

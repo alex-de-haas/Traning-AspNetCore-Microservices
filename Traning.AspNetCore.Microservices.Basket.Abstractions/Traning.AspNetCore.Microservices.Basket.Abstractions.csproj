@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Traning.AspNetCore.Microservices.Basket.Domain\Traning.AspNetCore.Microservices.Basket.Domain.csproj" />
     <ProjectReference Include="..\Traning.AspNetCore.Microservices.Catalog.Abstractions\Traning.AspNetCore.Microservices.Catalog.Abstractions.csproj" />
   </ItemGroup>
 

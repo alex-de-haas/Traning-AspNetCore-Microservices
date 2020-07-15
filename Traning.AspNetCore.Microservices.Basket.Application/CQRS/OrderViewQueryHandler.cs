@@ -1,5 +1,4 @@
-﻿using Ascetic.Microservices.Application.Exceptions;
-using Ascetic.Microservices.Application.Extensions;
+﻿using Ascetic.Microservices.Application.Extensions;
 using Ascetic.Microservices.Application.Managers;
 using AutoMapper;
 using MediatR;
@@ -33,14 +32,13 @@ namespace Traning.AspNetCore.Microservices.Basket.Application.CQRS
             var order = await _context.Orders.AsNoTracking().Include(x => x.OrderProducts).FirstOrDefaultAsync(x => x.Id == request.OrderId && x.CustomerEmail == customerEmail, cancellationToken);
             if (order == null)
             {
-                throw new EntityNotFoundException($"Order with id = '{request.OrderId}' for customer with email = '{customerEmail}' not found.");
+                return null;
             }
             var products = await _productsClient.GetProductsAsync(order.OrderProducts.Select(x => x.ProductId).ToArray(), cancellationToken);
             var result = _mapper.Map<OrderViewDto>(order);
             foreach(var orderPorduct in result.OrderProducts)
             {
                 orderPorduct.Product = products.FirstOrDefault(x => x.Id == orderPorduct.ProductId);
-                //orderPorduct.Product = await _productsClient.GetProductAsync(orderPorduct.ProductId, cancellationToken);
             }
             return result;
         }

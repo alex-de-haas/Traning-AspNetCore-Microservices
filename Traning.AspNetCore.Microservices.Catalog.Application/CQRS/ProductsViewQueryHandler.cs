@@ -1,5 +1,4 @@
 ﻿using Ascetic.Microservices.Application.CQRS;
-using AutoMapper;
 using Dapper;
 using MediatR;
 using Microsoft.Extensions.Configuration;
@@ -14,15 +13,11 @@ namespace Traning.AspNetCore.Microservices.Catalog.Application.CQRS
 {
     public class ProductsViewQueryHandler : IRequestHandler<ProductsViewQuery, ProductViewDto[]>, IQueryHandler<ProductsViewQuery, ProductViewDto[]>
     {
-        private readonly ICatalogDbContext _context;
-        private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
         private readonly ITracer _tracer;
 
-        public ProductsViewQueryHandler(ICatalogDbContext context, IMapper mapper, IConfiguration configuration, ITracer tracer)
+        public ProductsViewQueryHandler(IConfiguration configuration, ITracer tracer)
         {
-            _context = context;
-            _mapper = mapper;
             _configuration = configuration;
             _tracer = tracer;
         }
@@ -44,15 +39,6 @@ namespace Traning.AspNetCore.Microservices.Catalog.Application.CQRS
                     return result.ToArray();
                 }
             }
-
-            /*
-            var query = _context.Products.AsQueryable().AsNoTracking();
-            if (request.ProductIds.Any())
-            {
-                query = query.Where(x => request.ProductIds.Contains(x.Id));
-            }
-            return await _mapper.ProjectTo<ProductViewDto>(query).ToArrayAsync(cancellationToken);
-            */
         }
     }
 }
