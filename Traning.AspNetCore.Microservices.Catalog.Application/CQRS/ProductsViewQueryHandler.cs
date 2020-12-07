@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Traning.AspNetCore.Microservices.Catalog.Abstractions.Models;
+using Traning.AspNetCore.Microservices.Catalog.Domain.Entities;
 
 namespace Traning.AspNetCore.Microservices.Catalog.Application.CQRS
 {

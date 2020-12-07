@@ -21,12 +21,17 @@ namespace Traning.AspNetCore.Microservices.Catalog.Domain.Entities
 
         public void Update(string name, string description)
         {
+            if (string.IsNullOrEmpty(name)) throw new ArgumentNullException(nameof(name));
+            if (string.IsNullOrEmpty(description)) throw new ArgumentNullException(nameof(description));
+
             Name = name;
             Description = description;
         }
 
         public void Delete()
         {
+            if (IsDeleted) throw new InvalidOperationException("Product already deleted.");
+
             IsDeleted = true;
         }
     }
